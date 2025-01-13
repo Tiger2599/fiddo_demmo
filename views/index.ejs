@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebAuthn Example</title>
+  <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.es5.umd.min.js"></script>
+</head>
+<body>
+  <div style="display: flex; height: 100vh; justify-content: center; align-items: center;">
+    <button onclick="registerPasskey()" style="margin-right: 4px;">Register</button>
+    <button onclick="authenticatePasskey()">Login</button>
+  </div>
+
+  <script>
+    const { startRegistration, startAuthentication } = SimpleWebAuthnBrowser;
+
+    const registrationOptions = <%- JSON.stringify(registrationOptions) %>;
+    const loginOptions = <%- JSON.stringify(loginOptions) %>;
+
+    async function registerPasskey() {
+      try {
+        const attestationResponse = await startRegistration({ optionsJSON: registrationOptions });
+        console.log('REGISTER attestationResponse ', attestationResponse);
+      } catch (error) {
+        console.error('Error during register:', error);
+      }
+    }
+
+    async function authenticatePasskey() {
+      try {
+        const attestationResponse = await startAuthentication({ optionsJSON: loginOptions });
+        console.log('LOGIN attestationResponse ', attestationResponse);
+      } catch (error) {
+        console.error('Error during login:', error);
+      }
+    }
+  </script>
+</body>
+</html>
