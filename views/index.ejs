@@ -14,18 +14,26 @@
 
   <script>
     const { startRegistration, startAuthentication } = SimpleWebAuthnBrowser;
-
     const registrationOptions = <%- JSON.stringify(registrationOptions) %>;
     const loginOptions = <%- JSON.stringify(loginOptions) %>;
 
     async function registerPasskey() {
       try {
         const attestationResponse = await startRegistration({ optionsJSON: registrationOptions });
-        console.log('REGISTER attestationResponse ', attestationResponse);
+        const response = await fetch('/verify-register', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(attestationResponse),
+        });
+        const result = await response.json();
+        console.log(result);
       } catch (error) {
         console.error('Error during register:', error);
       }
     }
+
 
     async function authenticatePasskey() {
       try {
