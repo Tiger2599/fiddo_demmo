@@ -11,35 +11,56 @@
     <button onclick="registerPasskey()" style="margin-right: 4px;">Register</button>
     <button onclick="authenticatePasskey()">Login</button>
   </div>
-
   <script>
     const { startRegistration, startAuthentication } = SimpleWebAuthnBrowser;
-    const registrationOptions = <%- JSON.stringify(registrationOptions) %>;
-    const loginOptions = <%- JSON.stringify(loginOptions) %>;
 
     async function registerPasskey() {
       try {
-        const attestationResponse = await startRegistration({ optionsJSON: registrationOptions });
-        const response = await fetch('/verify-register', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(attestationResponse),
-        });
-        const result = await response.json();
-        console.log(result);
+        const registrationOptions = await fetch('/generate-registration-options', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username:"test" }),
+        }).then((res) => res.json());
+        console.log("registrationOptions",registrationOptions.options);
+        
+        const attestationResponse = await startRegistration({ optionsJSON: registrationOptions.options });
+
+        const verification = await fetch('/verify-register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...attestationResponse, username:"test" }),
+        }).then((res) => res.json());
+
+        console.log('Registration result:', verification);
       } catch (error) {
+        alert(error)
         console.error('Error during register:', error);
       }
     }
 
-
     async function authenticatePasskey() {
       try {
-        const attestationResponse = await startAuthentication({ optionsJSON: loginOptions });
-        console.log('LOGIN attestationResponse ', attestationResponse);
+        const authenticationOptions = await fetch('/generate-login-options', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username:"test" }),
+        }).then((res) => res.json());
+        
+        console.log(authenticationOptions);
+        const assertionResponse = await SimpleWebAuthnBrowser.startAuthentication({
+          optionsJSON: authenticationOptions,
+        });
+        console.log(assertionResponse);
+
+        const verification = await fetch('/verify-authentication', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...assertionResponse, username:"test" }),
+        }).then((res) => res.json());
+        
+        console.log('Login result:', verification);
       } catch (error) {
+        alert(error)
         console.error('Error during login:', error);
       }
     }
