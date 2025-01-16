@@ -13,8 +13,8 @@ const crypto = require('crypto');
 const generateRandomString = () => crypto.randomBytes(16).toString('base64url');
 
 const rpName = 'Demmo';
-const rpID = 'redesigned-doodle-rj9x7pvpqr9fx9jp-3000.app.github.dev';
-const origin = 'https://redesigned-doodle-rj9x7pvpqr9fx9jp-3000.app.github.dev';
+const rpID = 'refactored-space-goldfish-rj9x7pvpq792p9q-3000.app.github.dev';
+const origin = 'https://refactored-space-goldfish-rj9x7pvpq792p9q-3000.app.github.dev';
 
 // Middleware to parse JSON
 app.use(express.json());
