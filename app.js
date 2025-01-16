@@ -24,42 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-let users = {}; 
-let challenges = {}; 
-
-const registrationOptions = {
-  rp: {
-    name: "My App",
-    id: "redesigned-doodle-rj9x7pvpqr9fx9jp-3000.app.github.dev",
-  },
-  user: {
-    id: "dXNlci1pZC0xMjM",
-    name: "user@example.com",
-    displayName: "User Example",
-  },
-  pubKeyCredParams: [
-    {
-      type: "public-key",
-      alg: -7,
-    },
-  ],
-  challenge: "crjwSV7uqqEsi_6oCq3c0YGKZLYjlUofOZOAvVKiGJs",
-  timeout: 60000,
-  attestation: "none",
-};
-
-const loginOptions = {
-  challenge: "55bd9a25bdcfe6e7b35bc979c5d2b041cc1abd3d4828b75e1df070fcd16581be",
-  rpId: "redesigned-doodle-rj9x7pvpqr9fx9jp-3000.app.github.dev",
-  allowCredentials: [
-    {
-      id: "zV5GsR8XwRgg6N22SHXAuGBDUxLQU47F7BOowRiF3DkqPB-IGLHCBh6CZSokHmJ9TXCTpit3CzI-Vmw7PHMBMQ==",
-      type: "public-key",
-    },
-  ],
-  userVerification: "preferred",
-  timeout: 60000,
-};
+// let users = {}; 
+// let challenges = {}; 
 
 async function getRegisterOption(user, username){
   return await generateRegistrationOptions({
@@ -99,6 +65,10 @@ app.post('/generate-registration-options', async (req, res) => {
 
     const user = users[username] || { id: generateRandomString(), credentials: [] };
     users[username] = user;
+
+    console.log("user--------",user);
+    console.log("username--------",username);
+    console.log("users--------",users);
 
     let options = await getRegisterOption(user, username);
 
